@@ -1,0 +1,64 @@
+.itemContainer {
+  font: 'sans-serif';
+  color: darkgreen;
+  font-weight: bold;
+}
+.departmentContainer {
+  border: 1px solid black;
+  font: 'sans-serif';
+  color: darkgray;
+}
+.LeftColumn {
+  display: inline;
+
+}
+.MiddleColumn {
+  display: inline;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.RightColumn {
+  display: inline;
+  padding-left: 1em;
+}
+.LowerElement {
+  padding-top: 1em;
+}
+.InputLabel {
+  padding-right: 3px;
+}
+.LinkStyle {
+  color: lightseagreen;
+  cursor: pointer;
+}
+.LinkStyle:hover {
+  text-decoration: underline;
+}
+.LeftPadded {
+  padding-left: 2em;
+}
+.AlignRight {
+  float: right;
+}
+.ApplicableItem {
+  color: lightseagreen;
+  font-weight: bold;
+  padding-right: 3px;
+}
+.InvalidSelection {
+  color: darkred;
+  font-weight: bold;
+}
+
+/*
+name
+est costs
+actual costs
+due date
+applicable
+reason
+comment
+source
+funding
+attachment
+*/

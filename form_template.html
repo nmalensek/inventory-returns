@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Form Demo</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="constants.js"></script>
+  <link rel="stylesheet" href="./demo.css">
+</head>
+
+<body>
+  <div id="root" class="">
+  </div>
+
+  <script type="text/babel">
+    function generateLabelAndTextInput(elementId, elementClass, labelText, inputType) {
+        return (
+          <div className={elementClass}>
+            <label htmlFor={elementId} className={inputLabel}>
+              {labelText}
+            </label>
+            <input name={elementId} id={elementId} type={inputType} />
+          </div>
+      )
+    }
+
+    function generateApplicableDropdown(optionsObject) {
+      let optionsArray = [];
+      for (let i = 0; i < Object.keys(optionsObject).length; i++) {
+        optionsArray.push(<option key={i} value={i}>{optionsObject[i]}</option>)
+      }
+      return optionsArray;
+    }
+
+    function renderApplicableComponents(otherSelected, selectHandlingFunction, labelStyleState) {
+      if (otherSelected) {
+        return (
+                <span className={`${middleColumnStyle} ${leftPadded}`}>
+                  <span className={labelStyleState}>Reason for not applicable: </span>
+                  <select onChange={selectHandlingFunction}>
+                    {generateApplicableDropdown(notApplicableSelections)}
+                  </select>
+                  {generateLabelAndTextInput('otherReasonText', `${middleColumnStyle} ${invalidSelection}`, 'Reason:', 'text')}
+                </span>
+              )
+      }
+      return (
+                <span className={`${middleColumnStyle} ${leftPadded}`}>
+                  <span className={labelStyleState}>Reason for not applicable: </span>
+                 <select onChange={selectHandlingFunction}>
+                    {generateApplicableDropdown(notApplicableSelections)}
+                  </select>
+                </span>
+              )
+              
+    }
+
+      class CostItemContainer extends React.Component {
+        render() {
+          return (
+            <div>
+              <h1 className={itemContainerStyle}>Items by Department</h1>
+              <FiltersContainer />
+              <form>
+                <CostAreaContainer />
+              </form>
+            </div>
+         );
+        }
+      }
+      
+      class CostAreaContainer extends React.Component {
+        render () {
+          return (
+            <div>
+              <h3 className={departmentContainerStyle}>Clothing</h3>
+              <CostItemRow />
+            </div>
+          )
+        }
+      }
+
+      class FiltersContainer extends React.Component {
+        render() {
+          return (
+            <div>
+              <div className={leftColumnStyle}>
+                <input name={viewEditableOnly} id={viewEditableOnly} type="checkbox" />
+                <label htmlFor={viewEditableOnly}>
+                  View editable rows only
+                </label>
+              </div>
+              <div className={rightColumnStyle}>
+                <input name={viewApplicableOnly} id={viewApplicableOnly} type="checkbox" />
+                <label htmlFor={viewApplicableOnly}>
+                  View applicable rows only
+                </label>
+              </div>
+            </div>
+          )
+        }
+      }
+
+      class CostItemRow extends React.Component {
+        constructor(props) {
+          super(props)
+
+          this.state = {
+            applicable: false
+          };
+
+          this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(e) {
+          this.setState({
+            applicable: e
+          });
+        }
+
+        render() {
+          return (
+            <div>
+              <ApplicableCheckbox changeFunction={this.handleChange} applicable={this.state.applicable} />
+              <ItemRowInputs applicable={this.state.applicable} />
+              <SecondaryCostItemInfo />
+            </div>
+          )
+        }
+      }
+
+      class ItemRowInputs extends React.Component {
+        constructor(props) {
+          super(props)
+
+          this.state = {
+            labelStyle: invalidSelection,
+            otherReasonSelected: false
+          };
+          
+          this.handleSelection = this.handleSelection.bind(this);
+        }
+
+        handleSelection(e) {
+          var labelStyling = parseInt(e.target.value) === defaultSelectValue ? invalidSelection : '';
+          var requireUserInput = parseInt(e.target.value) === otherReasonValue ? true : false;
+          
+          this.setState({
+              labelStyle: labelStyling,
+              otherReasonSelected: requireUserInput
+          });
+        }
+
+        render() {
+          if (this.props.applicable) {
+            return (
+              <span>
+                {generateLabelAndTextInput('estimatedCosts', middleColumnStyle, 'Estimated Returns ($):', 'text')}
+                {generateLabelAndTextInput('actualCosts', middleColumnStyle, 'Actual Returns ($):', 'text')}
+                {generateLabelAndTextInput('dueDate', middleColumnStyle, 'Cutoff Date:', 'date')}
+              </span>
+            )
+          } else {
+              return (
+                <span>
+                  {renderApplicableComponents(this.state.otherReasonSelected, this.handleSelection, this.state.labelStyle)}
+                </span>
+              )
+          }
+        }
+      }
+
+      class ApplicableCheckbox extends React.Component {
+        constructor(props) {
+          super(props);
+          
+          this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(e) {
+          this.props.changeFunction(e.target.checked);
+        }
+
+        render() {
+          let styling = this.props.applicable ? applicableItem : inputLabel;
+          let thisId = 'applicableCheckbox';
+          return (
+            <div className={leftColumnStyle}>
+              <input name={thisId} id={thisId} defaultChecked={this.props.applicable}
+              onChange={this.handleChange} type='checkbox' />
+              <label htmlFor={thisId} className={styling}>
+                Applicable
+              </label>
+            </div>
+          )
+        }
+      }
+
+      class SecondaryCostItemInfo extends React.Component {
+        render() {
+          return (
+            <div>
+            <hr/>
+            <span className={linkStyle}>+ View/add Comment</span>
+            <span className={`${linkStyle} ${leftPadded}`}>+ View/add Attachment(s)</span>
+            {/*<span className={`${linkStyle} ${alignRight}`}>+ View/add Attachment(s)</span>*/}
+            </div>
+          )
+        }
+      }
+
+      // class ItemComments extends React.Component {
+      //   render() {
+      //     return (
+
+      //     )
+      //   }
+      // }
+
+      // class ItemAttachments extends React.Component {
+      //   render() {
+      //     return (
+
+      //     )
+      //   }
+      // }
+
+      ReactDOM.render(
+        <CostItemContainer />,
+          document.getElementById('root')
+      )
+    </script>
+</body>
+
+</html>
