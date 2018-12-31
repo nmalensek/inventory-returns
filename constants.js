@@ -17,14 +17,14 @@ const estimatedCosts = 'estimatedCosts';
 
 const otherReasonId = 'otherReasonText';
 
-const notApplicableSelections = {
-    0 : '-- Select --',
-    1 : 'No items produced this period',
-    2: 'No returns allowed (limited edition, etc.)',
-    3: 'Credit already counted in a prior period',
-    4: 'Seasonal',
-    5: 'Other (provide reason)'
-  };
+const notApplicableSelections = [
+    {value: 0, name: '-- Select --'},
+    {value: 1, name: 'No items produced this period'},
+    {value: 2, name: 'No returns allowed (limited edition, etc.)'},
+    {value: 3, name: 'Credit already counted in a prior period'},
+    {value: 4, name: 'Seasonal'},
+    {value: 5, name: 'Other (provide reason)'}
+  ];
 
 const defaultSelectValue = 0;
 const otherReasonValue = 5;

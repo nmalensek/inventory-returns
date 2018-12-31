@@ -8,7 +8,6 @@
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
   <script src="Constants.js"></script>
-  <script src="ElementGenerationFunctions.js"></script>
   <link rel="stylesheet" href="./FormStyling.css">
 </head>
 
@@ -17,6 +16,43 @@
   </div>
 
   <script type="text/babel">
+  function generateLabelAndTextInput(elementId, elementClass, labelText, inputType) {
+        return (
+          <div className={elementClass}>
+            <label htmlFor={elementId} className={inputLabel}>
+              {labelText}
+            </label>
+            <input name={elementId} id={elementId} type={inputType} />
+          </div>
+      )
+    }
+
+    function renderNotApplicableComponents(selectedValue, selectHandlingFunction, labelStyleState) {
+      var requireReason = selectedValue === otherReasonValue ? 
+        generateLabelAndTextInput('otherReasonText', `${middleColumnStyle} ${invalidSelection}`, 'Reason:', 'text') : null;
+        
+      return (
+              <span className={`${middleColumnStyle} ${leftPadded}`}>
+                <span className={labelStyleState}>Reason for not applicable: </span>
+                <select onChange={selectHandlingFunction} value={selectedValue}>
+                  {generateNotApplicableDropdown(notApplicableSelections)}
+                </select>
+                {requireReason}
+              </span>
+              )
+    }
+
+    function generateNotApplicableDropdown(optionsObject) {
+      let optionsArray = [];
+      optionsObject.map((item) => 
+        optionsArray.push(
+          <option key={item.value} value={item.value}>
+            {item.name}
+          </option>)
+      )  
+      return optionsArray;
+    }
+
       class CostItemContainer extends React.Component {
         render() {
           return (
@@ -97,19 +133,17 @@
 
           this.state = {
             labelStyle: invalidSelection,
-            otherReasonSelected: false
+            selectedValue: 0
           };
-          
-          this.handleSelection = this.handleSelection.bind(this);
+
+          this.handleDropdownSelection = this.handleDropdownSelection.bind(this);
         }
 
-        handleSelection(e) {
+        handleDropdownSelection(e) {
           var labelStyling = parseInt(e.target.value) === defaultSelectValue ? invalidSelection : '';
-          var requireUserInput = parseInt(e.target.value) === otherReasonValue ? true : false;
-          
           this.setState({
               labelStyle: labelStyling,
-              otherReasonSelected: requireUserInput
+              selectedValue: parseInt(e.target.value)
           });
         }
 
@@ -125,7 +159,7 @@
           } else {
               return (
                 <span>
-                  {renderApplicableComponents(this.state.otherReasonSelected, this.handleSelection, this.state.labelStyle)}
+                  {renderNotApplicableComponents(this.state.selectedValue, this.handleDropdownSelection, this.state.labelStyle)}
                 </span>
               )
           }
